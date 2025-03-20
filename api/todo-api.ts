@@ -1,5 +1,4 @@
 import { Todo } from "@/types/todo.type";
-import { text } from "stream/consumers";
 
 const BASE_URL = "http://localhost:3000/todos";
 
@@ -10,7 +9,7 @@ export const getTodos = async () => {
   return data;
 };
 
-export const createTodo = async () => {
+export const createTodo = async (text: string) => {
   const response = await fetch(BASE_URL, {
     method: "POST",
     headers: {
