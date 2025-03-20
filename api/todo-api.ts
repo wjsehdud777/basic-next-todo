@@ -27,6 +27,8 @@ export const createTodo = async (text: string) => {
 
   const date: Todo = await response.json();
 
+  revalidateTag("todos");
+
   return date;
 };
 
