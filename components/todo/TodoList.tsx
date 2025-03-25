@@ -1,13 +1,17 @@
-import { getTodos } from "@/api/todo-api";
+"use client";
+
 import React from "react";
 import TodoItem from "./TodoItem";
+import { useTodosQuery } from "@/query/useTodoQuery";
 
-const TodoList = async () => {
-  const todos = await getTodos();
+const TodoList = () => {
+  const { data: todos } = useTodosQuery();
+
+  // if(!todos) return <div>로딩 중...</div>
 
   return (
     <ul className="space-y-2">
-      {todos.map((todo) => (
+      {todos?.map((todo) => (
         <li key={todo.id}>
           <TodoItem todo={todo} />
         </li>
