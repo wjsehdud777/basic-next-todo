@@ -2,11 +2,12 @@
 
 import { Todo } from "@/types/todo.type";
 import Link from "next/link";
-import React from "react";
-import { Button } from "../ui/button";
+import React, { useId } from "react";
 import { cn } from "@/lib/utils";
 import TodoDeleteButton from "./TodoDeleteButton";
 import { useToggleTodoMutation } from "@/query/useQueryMutation";
+import { Checkbox } from "../ui/checkbox";
+import { CheckedState } from "@radix-ui/react-checkbox";
 
 interface TodoItemProps {
   todo: Todo;
@@ -14,30 +15,34 @@ interface TodoItemProps {
 
 const TodoItem = ({ todo }: TodoItemProps) => {
   const { mutate: toggleTodoCompleted } = useToggleTodoMutation();
-
   const { id, text, completed } = todo;
+  const checkboxId = useId();
+
+  const onCheckedChange = (checked: CheckedState) => {
+    if (checked === "indeterminate") return;
+
+    toggleTodoCompleted({ id, completed: checked });
+  };
 
   return (
     <article className="flex flex-row items-center justify-between p-4 rounded-md border">
-      <Link
-        href={`/${id}`}
-        className={cn("hover:underline", {
-          "line-through": completed,
-        })}
-      >
-        <h2>{text}</h2>
-      </Link>
+      <div className="flex flex-row items-center gap-4">
+        <Checkbox
+          id={checkboxId}
+          checked={completed}
+          onCheckedChange={onCheckedChange}
+        />
+        <Link
+          href={`/${id}`}
+          className={cn("hover:underline", {
+            "line-through": completed,
+          })}
+        >
+          <h2>{text}</h2>
+        </Link>
+      </div>
 
       <div className="space-x-2">
-        <Button
-          onClick={() => toggleTodoCompleted({ id, completed: !completed })}
-          variant="outline"
-        >
-          {completed ? "취소" : "완료"}
-        </Button>
-        {/* <Button onClick={() => deleteTodo(id)} variant="destructive">
-          삭제
-        </Button> */}
         <TodoDeleteButton id={id} />
       </div>
     </article>
